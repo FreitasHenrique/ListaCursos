@@ -1,0 +1,288 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct amigos{
+    int info;
+    struct amigos *prox;
+}Amigos;
+
+typedef struct aluno{
+    int id;
+    char nome[10], curso[30];
+    struct aluno *ant, *prox;
+    Amigos *listaAmigos;
+}Aluno;
+
+void menu(int *op){
+    // system("cls");
+    printf("----- Menu -----\n\n");
+    printf("[1] - Inserir um novo aluno.\n");
+    printf("[2] - Alterar os dados de um alunos.\n");
+    printf("[3] - Remover um aluno\n");
+    printf("[4] - Imprimir a lista de alunos.\n");
+    printf("[5] - Inserir relacao de amizade\n");
+    printf("[6] - Remover relacao de amizade\n");
+    printf("[7] - Imprimir amigos de um aluno\n");
+    printf("[8] - Imprimir a lista de alunos por curso\n");
+    printf("[9] - Sair.\n");
+        scanf("%d",op);
+}
+
+void criarLista(Aluno **a){
+    *a = NULL;
+}
+
+Aluno *leAluno(Aluno **a,int *ID){
+    system("cls");
+    Aluno *n = malloc(sizeof(Aluno));
+    if(n != NULL){
+        n->id = *ID;
+        printf("Informe o nome do novo aluno: ");
+            scanf("%s",n->nome);
+        printf("Informe o curso do novo aluno: ");
+            scanf("%s",n->curso);
+        n->listaAmigos == NULL;    
+        n->prox = (*a);
+        n->ant = NULL;
+        
+        if((*a) != NULL){
+        	(*a)->ant = n;
+		}
+		
+		(*a) = n;
+        *ID = *ID+1;
+
+        n->listaAmigos = NULL;
+        return (*a);
+    }
+    else
+        printf("Falha ao alocar memoria, volte duas casas!\n\n");
+}
+
+void imprimeAluno(Aluno **a){
+    system("cls");
+    int cont = 0;
+    Aluno *p;
+        for(p = *a; p != NULL; p = p->prox){
+            printf("----- Aluno %d -----\n\n", cont);
+            printf("Id: %d\n",p->id);
+            printf("Nome: %s\n",p->nome);
+            printf("Curso: %s\n\n",p->curso);
+            cont++;
+        }
+    system("pause");
+}
+
+void removeAluno(Aluno **a){}
+
+void imprimePorCurso(Aluno **a){
+    system("cls");
+    int cont = 0;
+    char sla[30];
+        printf("informe o curso que deseja pesquisar:\n");
+            scanf("%s",&sla);
+    Aluno *p;
+    for(p = *a; p != NULL; p = p->prox){
+        if(strcmp(p->curso, sla) == 0){
+            printf("----- Aluno %d -----\n\n", cont);
+            printf("Id: %d\n",p->id);
+            printf("Nome: %s\n",p->nome);
+            printf("Curso: %s\n\n",p->curso);
+            cont++;
+        }
+    }
+    system("pause");
+}
+
+int verificaID(int *temp){
+    int x;
+    printf("Informe o ID do aluno:");
+        scanf("%d",&x);
+    return x;
+}
+
+int showOptions(int *temp){
+    int opcao;
+    printf("O que deseja alterar deste aluno? \n\n");
+    printf("[1] - Nome.\n");
+    printf("[2] - Curso.\n");
+        scanf("%d",&opcao);
+    return opcao;
+}
+
+void alteraNome(Aluno *a){
+    printf("Informe o novo nome do aluno:");
+        scanf("%s",a->nome);
+}
+
+void alteraCurso(Aluno *a){
+    printf("Informe o novo curso do aluno:");
+        scanf("%s",a->curso);
+}
+
+void alterarDados(Aluno **a){
+system("cls");   
+    int temp = verificaID(&temp);
+	Aluno *p;
+    for (p = *a; p != NULL; p = p->prox ){
+        if (p->id == temp){
+            int op = showOptions(&op);
+            op == 1? alteraNome(*a) : alteraCurso(*a);
+        }else
+            printf("ID nao encontrado.\n");
+    }
+}
+
+int verificaA(Aluno *a){
+	 int temp = verificaID(&temp);
+    Aluno* n = a;
+    
+    while(n != NULL){
+    	if(n->id == temp){
+    		return 1;
+		}
+	}
+	return 0;
+    	
+}
+
+int verfificaAmizade(Aluno * a){
+	Aluno* n = a;
+	int temp;
+	while(n->listaAmigos != NULL){
+			if(n->listaAmigos->info == temp){
+				return 1;
+			}
+			n->listaAmigos = n->listaAmigos->prox;
+		}	
+	return 0 ;
+}
+void insereAmigo(Aluno **a){
+    //system("cls");
+    
+    Aluno* n = (*a);
+    int temp;
+    
+    if(verificaA(n) == 1){
+    	printf("Informe o ID do amigo:\n");
+        scanf("%d",&temp);
+        if(verfificaAmizade(n) != 1){
+        	if(n->listaAmigos == NULL){
+        		Aluno* p = malloc(sizeof(Aluno));
+				p->listaAmigos->info = temp;	
+        		(*a)->listaAmigos = p->listaAmigos;
+        		p->listaAmigos->prox = NULL;
+			}else{
+				Aluno* p = malloc(sizeof(Aluno));
+				p->listaAmigos->info = temp;
+				p->listaAmigos->prox = (*a)->listaAmigos;
+				(*a)->listaAmigos = p->listaAmigos;		
+			}	
+			 	
+		}else{
+			printf("Amigo j? esta na lista .\n");
+		}
+		
+		
+        	 
+	}else{
+		printf("Aluno n?o encontrado\n");
+	}
+    
+    
+}
+
+void removeAmigo(Aluno **a){
+    if((*a) != NULL){
+        Aluno *p,*n;
+        n = (*a);
+        
+        int temp = verificaID(&temp);
+        while(n != NULL && n->id != temp  ) {
+        	p = n ;
+        	n = n->prox;
+        }
+        
+        if(n == NULL){
+        	printf("ID NAO ENCONTRADO/n");
+		}
+		
+		if(n == (*a)){
+			(*a) = n->prox;	
+		}else{
+			p->prox = n->prox;
+			
+		}
+		
+		free(n);
+        
+    }else{
+        printf("Lista vazia! /n");
+    }
+}
+
+void imprimeAmigo(Aluno **a){
+    system("cls");
+    int temp;
+    printf("Informe o ID do aluno:");
+    	scanf("%d",&temp);
+    
+	Aluno *p;
+    for(p = *a; p != NULL; p = p->prox){
+        if(p->id == temp){
+             printf("Amigos de %s\n\n",(*a)->nome);
+             Amigos *aux;
+             for(aux = (*a)->listaAmigos; aux != NULL ;aux = aux->prox){
+                printf("%d\n",aux);
+             }
+        }
+    }
+}
+
+int main()
+{
+system("cls");
+Aluno *lista;
+int incrementID = 0, op = 0;
+
+    criarLista(&lista);
+    while (op != 9)
+    {
+        menu(&op);
+        switch (op)
+        {
+        case 1:
+            leAluno(&lista,&incrementID);
+            break;
+        case 2:
+            alterarDados(&lista);
+            break;
+        // case 3:
+        //     removeAluno();
+        //     break;
+        case 4:
+            imprimeAluno(&lista);
+            break;
+        case 5:
+            insereAmigo(&lista);
+            break;
+        case 6:
+            removeAmigo(&lista);
+            break;
+        case 7:
+            imprimeAmigo(&lista);
+            break;
+        case 8:
+            imprimePorCurso(&lista);
+            break;
+        default:
+            break;
+        }
+    }
+    
+    system("cls");
+    return 0;
+}
+
+
